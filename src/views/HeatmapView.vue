@@ -6,6 +6,15 @@
       class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
     />
     <div id="map" class="h-full z-[1]"></div>
+    <div class="fixed right-12 bottom-8 z-[2]">
+      <input type="file" class="block w-full text-sm text-slate-500
+      file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-slate-600 file:text-white
+      hover:file:bg-slate-700
+    "/>
+    </div>
   </div>
 </template>
 
