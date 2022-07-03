@@ -7,13 +7,17 @@
     />
     <div id="map" class="h-full z-[1]"></div>
     <div class="fixed right-12 bottom-8 z-[2]">
-      <input type="file" class="block w-full text-sm text-slate-500
-      file:mr-4 file:py-2 file:px-4
-      file:rounded-full file:border-0
-      file:text-sm file:font-semibold
-      file:bg-slate-600 file:text-white
-      hover:file:bg-slate-700
-    "/>
+      <input 
+        type="file" 
+        class="block w-full text-sm text-slate-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-slate-600 file:text-white
+                hover:file:bg-slate-700"
+        accept="image/*"
+        @change="handleImageUpload($event)"
+      />
     </div>
   </div>
 </template>
@@ -22,8 +26,15 @@
 
 import * as L from "leaflet";
 import "leaflet.heat";
+import "leaflet-toolbar/dist/leaflet.toolbar.css";
+import "leaflet-toolbar";
+import "leaflet-distortableimage";
 import { onMounted } from "vue";
 import SearchBar from '@/components/SearchBar.vue';
+
+import "leaflet-distortableimage/dist/leaflet.distortableimage.css";
+import "leaflet-distortableimage/dist/vendor.js";
+
 
 export default {
   name: 'HomeView',
@@ -62,9 +73,27 @@ export default {
       layerGroup.addTo(map);
     }
 
+    const onFileLoad = (event, callback) => {
+      const input = event.target;
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const dataURL = reader.result;
+        callback(dataURL);
+      };
+      reader.readAsDataURL(input.files[0]);
+};
+
+    const handleImageUpload = (event) => {
+      onFileLoad(event, (url) => {
+        L.distortableImageOverlay(url).addTo(map);
+      });
+    }
+
     return {
       moveToBuilding,
-      loadHeatmap
+      loadHeatmap,
+      handleImageUpload
     }
   }
 }
