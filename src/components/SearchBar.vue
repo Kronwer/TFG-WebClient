@@ -59,7 +59,7 @@ export default {
 
         // API Call to retrieve list of buildings
         const loadBuildings = () => {
-            axios.get("http://localhost:3000/building").then((response) => {
+            axios.get("http://localhost:3000/buildings").then((response) => {
                 buildings.value = response.data;
             })
         }
