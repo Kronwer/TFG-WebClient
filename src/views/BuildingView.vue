@@ -39,7 +39,7 @@
         <tbody class="bg-white divide-y divide-gray-300">
           <!-- For loop to create building rows from an array -->
           <tr
-            v-for="building in buildings"
+            v-for="(building, index) in buildings"
             v-bind:key="building.id"
             class="whitespace-nowrap text-sm text-gray-900 h-1 min-h-0"
           >
@@ -57,7 +57,7 @@
             <td class="px-6 py-4">
               <button 
                 class="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded w-20"
-                @click="onEditButton()" >
+                @click="currentIndex = index; onEditButton(building)" >
                 Edit
               </button>
             </td>
@@ -65,7 +65,7 @@
             <td class="px-6 py-4">
               <button 
                 class="bg-red-400 hover:bg-red-500 text-white py-2 px-4 rounded w-20"
-                @click="onDeleteButton(building)">
+                @click="currentIndex = index; onDeleteButton(building)">
                 Delete
               </button>
             </td>    
@@ -73,8 +73,13 @@
         </tbody>
       </table>
     </div>
-    <!-- Building Modal Window -->
-    <BuildingForm v-if="showBuildingForm" @onCloseButton="hideBuildingForm"/>
+    <!-- Building Editing Modal Window -->
+    <BuildingForm
+      v-if="showBuildingForm"
+      :editMode="editMode"
+      :building="currentBuilding"
+      @onSaveButton="updateBuildings"
+      @onCloseButton="hideBuildingForm"/>
     <div v-if="showBuildingForm" class="absolute inset-0 z-20 opacity-25 bg-black"></div>
   </div>
 </template>
@@ -90,55 +95,93 @@ export default {
     const addMode = ref(false);
     const editMode = ref(false);
     const buildings = ref(null);
+    const currentBuilding = ref(null);
+    const currentIndex = ref(null);
     const showBuildingForm = ref(false);
 
+
+    // API Call to get all buildings
     const loadBuildings = () => {
-      axios.get("http://localhost:3000/buildings").then((response) => {
-        buildings.value = response.data;
-      });
+      try {
+        axios.get("http://localhost:3000/buildings").then((response) => {
+          buildings.value = response.data;
+        });
+      } catch(err) {
+        alert(err.message);
+      }
+      
     };
 
-    const onEditButton = () => {
+    // Populate Table
+    loadBuildings();
+
+    // Edit Button Listener
+    const onEditButton = (building) => {
       editMode.value = true;
       addMode.value = false;
       showBuildingForm.value = true;
+      currentBuilding.value = building;
     }
 
+    // Add Button Listener
     const onAddButton = () => {
       if (addMode.value) {
         addMode.value = false;
       } else {
         addMode.value = true;
         showBuildingForm.value = true;
+        currentBuilding.value = {
+          name: '',
+          floors: 1,
+          latitude: 39.48067057885303,
+          longitude: -0.3398773008264785
+        };
       }
     }
 
+    // Delete Button Listener
     const onDeleteButton = (building) => {
-      if (confirm("Are you sure you want to delete building " + building.name)) {
-        console.log("You pressed YES");
-      } else {
-        console.log("You pressed CANCEL");
+      if (confirm(`Are you sure you want to delete ${building.name}?\nWARNING: This will remove all coordinates related to this building.`)) {
+        try {
+          axios.delete(`http://localhost:3000/buildings/${building.id}`).then(() => {
+            buildings.value.splice(currentIndex.value, 1);
+          });
+        } catch(err) {
+          alert(err.message);
+        }
       }
     }
 
+    // Hide Editing Building Window
     const hideBuildingForm = () => {
       addMode.value = false;
       editMode.value = false;
       showBuildingForm.value = false;
     }
 
-    // Execute methods
-    loadBuildings();
+    // Method executed when a building has been created or edited
+    const updateBuildings = (building) => {
+      if (editMode.value) {
+        buildings.value[currentIndex.value] = building;
+      }
+      if (addMode.value) {
+        loadBuildings();
+      }
+      hideBuildingForm();
+    }
 
     return {
       buildings,
       addMode,
       editMode,
       showBuildingForm,
+      currentBuilding,
+      currentIndex,
       onDeleteButton,
       onEditButton,
       onAddButton,
-      hideBuildingForm
+      hideBuildingForm,
+      updateBuildings
     };
   },
 };

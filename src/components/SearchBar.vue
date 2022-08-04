@@ -33,11 +33,11 @@
             ></Datepicker>
         </div>
         <!-- Search Button -->
-        <div 
-            class="px-4 bg-white flex items-center shadow-md rounded-md min-h-[25px] bg-slate-600 hover:bg-slate-700 hover:cursor-pointer"
-            @click="getHeatmap">
-            <i class="fa-solid fa-magnifying-glass text-[15px] text-white"></i>
-        </div>
+        <button
+            class="px-4 shadow-md rounded-md bg-slate-600 hover:bg-slate-700 disabled:bg-slate-500 disabled:hover:bg-slate-500"
+            @click="getHeatmap"
+            :disabled="!selectedBuilding || !endDate">
+            <i class="fa-solid fa-magnifying-glass text-[15px] text-white"></i></button>
     </div>
 </template>
 
@@ -83,8 +83,6 @@ export default {
         // Search Button listener
         const getHeatmap = async () => {
             try {
-                console.log(getStartDate());
-                console.log(getEndDate());
                 const data = await axios.get(`http://localhost:3000/coordinates`, {
                     params: {
                         building: selectedBuilding.value.id,
