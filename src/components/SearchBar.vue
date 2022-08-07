@@ -90,7 +90,10 @@ export default {
                         endDate: getEndDate()
                     }
                 });
-                const result = data.data.map(({latitude, longitude}) => [latitude, longitude, 1]);
+                const result = data.data;
+                if (result.length === 0) {
+                    alert("No coordinates were found for this search criteria");
+                }
                 emit("loadHeatmap", result);
             }
             catch(err) {
