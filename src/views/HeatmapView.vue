@@ -64,7 +64,7 @@ export default {
 
     onMounted(() => {
       // init map
-      map = L.map('map').setView([39.480878365981056, -0.3409574554237043], 15);
+      map = L.map('map', {minZoom: 15, maxZoom: 20}).setView([39.480878365981056, -0.3409574554237043], 18);
 
       // add tile layer
       streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hnYXJjaWE5OCIsImEiOiJjbDJyd3p0anowMHhoM2NsbXVkdTZlYXNrIn0.esKnkHNbl1d0-hNxQxv34A', 

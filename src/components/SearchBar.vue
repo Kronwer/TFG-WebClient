@@ -11,32 +11,30 @@
                 </option>
             </select>
             <!-- Builiding Icon -->
-            <div class="absolute top-0 left-[14px] h-full flex items-center">
-                <i class="fa-solid fa-building text-slate-600 text-xl"></i>
+            <div class="absolute top-0 left-[14px] h-full flex items-center hover:cursor-pointer" @click="onBuildingSelected()">
+                <i v-if="selectedBuilding" class="fa-solid fa-location-crosshairs text-slate-600 text-xl"></i>
             </div>
         </div>
         <!-- Date Picker -->
-        <div class="relative flex-1 shadow-md rounded-md">
+        <div class="relative flex-1 shadow-md rounded-md md:min-w-[300px]">
             <Datepicker
                 class="h-full"
-                v-model="startDate"
-                :modelValue="date"
+                ref="datepicker"
+                range multiCalendars
+                :presetRanges="presetRanges"
+                v-model="dates"
                 :format="dateFormat"
-            ></Datepicker>
-        </div>
-        <!-- Date Picker -->
-        <div class="relative flex-1 shadow-md rounded-md">
-            <Datepicker
-                v-model="endDate"
-                :modelValue="date"
-                :format="dateFormat"
+                :clearable="false"
+                :maxDate="new Date()"
+                :closeOnAutoApply="false"
+                autoApply
             ></Datepicker>
         </div>
         <!-- Search Button -->
         <button
             class="px-4 shadow-md rounded-md bg-slate-600 hover:bg-slate-700 disabled:bg-slate-500 disabled:hover:bg-slate-500"
             @click="getHeatmap"
-            :disabled="!selectedBuilding || !endDate">
+            :disabled="!selectedBuilding || !dates">
             <i class="fa-solid fa-magnifying-glass text-[15px] text-white"></i></button>
     </div>
 </template>
@@ -45,9 +43,10 @@
 
 import Datepicker from "@vuepic/vue-datepicker";
 import axios from "axios";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import moment from 'moment';
+import {startOfMonth, subMonths, subYears } from 'date-fns';
 
 export default {
     components: { Datepicker },
@@ -65,11 +64,37 @@ export default {
         }
 
         // Start/End Date variables
-        const startDate = ref(new Date());
-        const endDate = ref(null);
+        const dates = ref();
+        const presetRanges = ref([
+          { label: 'Today', range: [new Date().setHours(0,0,0,0), new Date().setHours(23,59,0,0)] },
+          { label: 'This month', range: [startOfMonth(new Date().setHours(0,0,0,0)), new Date().setHours(23,59,0,0)] },
+          {
+            label: 'Last month',
+            range: [subMonths(new Date().setHours(0,0,0,0), 1), new Date().setHours(23,59,0,0)],
+          },
+          { label: 'This year', range: [subYears(new Date().setHours(0,0,0,0), 1), new Date().setHours(23,59,0,0)] },
+        ]);
+
+        onMounted(() => {
+            const startDate = new Date();
+            const endDate = new Date();
+
+            startDate.setDate(endDate.getDate());
+            startDate.setHours(0,0,0,0);
+            endDate.setHours(23,59,0,0);
+
+            dates.value = [startDate, endDate];
+        })
 
         // Date format
-        const dateFormat = (date) => {
+        const dateFormat = (dates) => {
+            const startDate = dates[0];
+            const endDate = dates[1];
+
+            return `${getDateString(startDate)} - ${getDateString(endDate)}`;
+        }
+
+        function getDateString(date) {
             let day = date.getDate();
             let month = date.getMonth();
             let year = date.getFullYear();
@@ -77,7 +102,7 @@ export default {
             let minutes = date.getMinutes();
             let minutesFormatted = Math.floor(minutes / 10) + '' + minutes % 10;
 
-            return `${day}/${month}/${year} ${hours}:${minutesFormatted}`
+            return `${day}/${month + 1}/${year} ${hours}:${minutesFormatted}`;
         }
 
         // Search Button listener
@@ -102,15 +127,17 @@ export default {
         }
 
         const getStartDate = () => {
-            return moment(startDate.value).utcOffset(0, true).format();
+            return moment(dates.value[0]).utcOffset(0, true).format();
         }
 
         const getEndDate = () => {
-            return moment(endDate.value).utcOffset(0, true).format();
+            return moment(dates.value[1]).utcOffset(0, true).format();
         }
 
         const onBuildingSelected = () => {
-            emit("moveToBuilding", selectedBuilding.value);
+            if (selectedBuilding.value) {
+                emit("moveToBuilding", selectedBuilding.value);
+            }
         }
 
         // Execute API Calls
@@ -121,8 +148,8 @@ export default {
             buildings,
             onBuildingSelected,
             loadBuildings,
-            startDate,
-            endDate,
+            dates,
+            presetRanges,
             dateFormat,
             getHeatmap
         }
@@ -156,4 +183,5 @@ $dp__preview_font_size: 1rem !default; // font size of the date preview in the a
   --dp-icon-color: #475569;
   --dp-danger-color: #ff6f60;
 }
+
 </style>
