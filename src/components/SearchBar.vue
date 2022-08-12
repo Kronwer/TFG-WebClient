@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]
+    <div class="w-full sm:flex-col lg:flex-row md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]
     flex gap-4 px-6 py-8 md:px-0 md:py-0 bg-transparent">
         <!-- Building Selector -->
         <div class="relative flex-1 md:min-w-[350px]">

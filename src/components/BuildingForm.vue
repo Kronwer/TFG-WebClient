@@ -10,19 +10,20 @@
                     <!-- Floors Field -->
                     <div class="mb-6">
                         <label for="floors" class="block mb-2 text-sm font-medium text-gray-900">Floors</label>
-                        <select id="floors" v-model="currentBuilding.floors" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
-                            <option v-for="index in 8" :key="index">{{ index }}</option>
-                        </select>
-                    </div>
+                        <FloorCounter
+                            :floors="building.floors"
+                            :fromBuildingTable="true"
+                            @onFloorUpdated="updateFloor" />
+                    </div> 
                     <!-- Latitude Field -->
                     <div class="mb-6">
                         <label for="latitude" class="block mb-2 text-sm font-medium text-gray-900">Latitude</label>
-                        <input id="latitude" v-model="currentBuilding.latitude" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" :disabled="true">
+                        <input id="latitude" v-model="currentBuilding.latitude" class="bg-gray-50 border border-gray-300 text-gray-400 text-sm rounded-lg block w-full p-2.5" :disabled="true">
                     </div>
                     <!-- Longitude Field -->
                     <div class="mb-6">
                         <label for="longitude" class="block mb-2 text-sm font-medium text-gray-900">Longitude</label>
-                        <input id="longitude" v-model="currentBuilding.longitude" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" :disabled="true">
+                        <input id="longitude" v-model="currentBuilding.longitude" class="bg-gray-50 border border-gray-300 text-gray-400 text-sm rounded-lg block w-full p-2.5" :disabled="true">
                     </div>
                     <!-- Map -->
                     <div id="map" class="h-64 "></div>
@@ -43,9 +44,11 @@
 import * as L from "leaflet";
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import FloorCounter from '@/components/FloorCounter.vue';
 
 export default {
     name: 'BuildingForm',
+    components: { FloorCounter },
     props: ['building','editMode'],
     setup(props, { emit }) {
 
@@ -122,10 +125,15 @@ export default {
             }
         }
 
+        const updateFloor = (floorNumber) => {
+            currentBuilding.value.floors = floorNumber;
+        }
+
         return {
             currentBuilding,
             onSaveButton,
-            onCancelButton
+            onCancelButton,
+            updateFloor
         }
     }
 }

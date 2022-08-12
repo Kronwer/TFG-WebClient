@@ -7,24 +7,25 @@
     />
     <div id="map" class="h-full z-[1]"></div>
     <div class="fixed right-12 bottom-8 z-[2]">
-      <input 
+      <input
+        id="selectedFile"
         type="file"
-        class="block w-full text-sm text-slate-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-slate-600 file:text-white
-                hover:file:bg-slate-700"
+        class="invisible"
         accept="image/*"
         @change="handleImageUpload($event)"
       />
     </div>
-    <div v-if="buildingFloors" class="flex flex-col-reverse fixed left-8 bottom-8 z-[2] rounded-xl bg-white p-2">
-      <div v-for="floor in buildingFloors" v-bind:key="floor">
-        <input v-if="floor === 1" type="radio" :id="floor" v-model="selectedFloor" :value="floor" @change="updateHeatmap()" class="peer hidden" checked/>
-        <input v-else type="radio" :id="floor" v-model="selectedFloor" :value="floor" @change="updateHeatmap()" class="peer hidden" />
-        <label :for="floor" class="block cursor-pointer select-none rounded-xl px-4 py-2 text-center font-bold peer-checked:bg-gray-800 peer-checked:font-bold peer-checked:text-white">{{ floor }}</label>
-      </div>
+    <div
+        class="fixed right-12 bottom-8 z-[3] rounded-full px-4 py-3 bg-slate-600 hover:bg-slate-700 cursor-pointer"
+        onclick="document.getElementById('selectedFile').click();">
+        <i class="fa-solid fa-plus text-xl text-white"></i>  
+    </div>
+    <div class="fixed left-12 bottom-8 z-[2]">
+      <FloorCounter v-if="buildingFloors"
+      :floors="buildingFloors"
+      :fromBuildingTable="false"
+      :key="buildingFloors"
+      @onFloorUpdated="updateFloor" />
     </div>
   </div>
 </template>
@@ -38,6 +39,7 @@ import "leaflet-toolbar";
 import "leaflet-distortableimage";
 import { onMounted, ref } from "vue";
 import SearchBar from '@/components/SearchBar.vue';
+import FloorCounter from '@/components/FloorCounter.vue';
 
 import "leaflet-distortableimage/dist/leaflet.distortableimage.css";
 import "leaflet-distortableimage/dist/vendor.js";
@@ -45,7 +47,7 @@ import "leaflet-distortableimage/dist/vendor.js";
 
 export default {
   name: 'HomeView',
-  components: { SearchBar },
+  components: { SearchBar, FloorCounter },
   setup() {
 
     const selectedFloor = ref(1);
@@ -64,7 +66,7 @@ export default {
 
     onMounted(() => {
       // init map
-      map = L.map('map', {minZoom: 15, maxZoom: 20}).setView([39.480878365981056, -0.3409574554237043], 18);
+      map = L.map('map', {minZoom: 18, maxZoom: 20}).setView([39.480878365981056, -0.3409574554237043], 18);
 
       // add tile layer
       streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hnYXJjaWE5OCIsImEiOiJjbDJyd3p0anowMHhoM2NsbXVkdTZlYXNrIn0.esKnkHNbl1d0-hNxQxv34A', 
@@ -126,9 +128,14 @@ export default {
 
     const updateHeatmap = () => {
       heatmapLayer.clearLayers();
-      heatmapLayer.addLayer(L.heatLayer(heatmapPoints.filter(
-        point => point.floorNumber === selectedFloor.value
-        ).map(({latitude, longitude}) => [latitude, longitude]), { maxZoom: 21}));
+      heatmapLayer.addLayer(
+        L.heatLayer(
+          heatmapPoints.filter(
+            point => point.floorNumber === selectedFloor.value
+            ).map(({latitude, longitude}) => [latitude, longitude]), { 
+              maxZoom: 22,
+
+        }));
     }
 
     const onFileLoad = (event, callback) => {
@@ -152,6 +159,13 @@ export default {
       console.log(selectedFloor.value);
     }
 
+    const updateFloor = (floor) => {
+      selectedFloor.value = floor;
+      if (heatmapPoints) {
+        updateHeatmap();
+      }
+    }
+
     return {
       selectedFloor,
       buildingFloors,
@@ -159,7 +173,8 @@ export default {
       loadHeatmapPoints,
       updateHeatmap,
       handleImageUpload,
-      printSelected
+      printSelected,
+      updateFloor
     }
   }
 }
