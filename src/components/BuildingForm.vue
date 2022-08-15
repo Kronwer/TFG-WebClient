@@ -97,7 +97,7 @@ export default {
             if (props.editMode) {
                 // Axios call to update building
                 try {
-                    await axios.put(`http://localhost:3000/buildings/${currentBuilding.value.id}`, {
+                    await axios.put(`http://192.168.18.118:3000/buildings/${currentBuilding.value.id}`, {
                         name: currentBuilding.value.name,
                         floors: currentBuilding.value.floors,
                         latitude: currentBuilding.value.latitude,
@@ -111,7 +111,7 @@ export default {
             } else {
                 // Axios call to create new building
                 try {
-                    await axios.post(`http://localhost:3000/buildings`, {
+                    await axios.post(`http://192.168.18.118:3000/buildings`, {
                         name: currentBuilding.value.name,
                         floors: currentBuilding.value.floors,
                         latitude: currentBuilding.value.latitude,

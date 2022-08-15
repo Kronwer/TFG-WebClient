@@ -1,31 +1,45 @@
 <template>
-  <div class="h-screen relative">
-    <SearchBar
+  <div class="flex flex-col h-screen relative">
+    <!-- Top Section -->
+    <div class="flex justify-center px-8 py-6 sm:py-4 bg-slate-700">
+      <SearchBar
       @moveToBuilding="moveToBuilding"
       @loadHeatmap="loadHeatmapPoints"
-      class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
     />
-    <div id="map" class="h-full z-[1]"></div>
-    <div class="fixed right-12 bottom-8 z-[2]">
-      <input
-        id="selectedFile"
-        type="file"
-        class="invisible"
-        accept="image/*"
-        @change="handleImageUpload($event)"
-      />
     </div>
-    <div
-        class="fixed right-12 bottom-8 z-[3] rounded-full px-4 py-3 bg-slate-600 hover:bg-slate-700 cursor-pointer"
+    <!-- Bottom Section -->
+    <div class="h-full">
+      <!-- Map -->
+      <div id="map" class="h-full z-[1]"></div>
+      <!-- Floor Counter -->
+      <div class="fixed left-3 bottom-10 sm:bottom-4 z-[3]">
+        <FloorCounter v-if="currentBuilding"
+        :floors="currentBuilding.floors"
+        :fromBuildingTable="false"
+        :key="currentBuilding"
+        @onFloorUpdated="updateFloor" />
+      </div>
+      <!-- Image Input (Invisible) -->
+      <div class="fixed right-12 bottom-8 z-[2]">
+        <input
+          id="selectedFile"
+          type="file"
+          class="invisible"
+          accept=".jpg,.png"
+          @change="handleImageUpload($event)"
+        />
+      </div>
+      <!-- Image Input (Visible Button)-->
+      <div
+        class="fixed right-3 bottom-10 z-[3] rounded-full px-3 py-2 bg-slate-600 hover:bg-slate-700 cursor-pointer text-center"
         onclick="document.getElementById('selectedFile').click();">
         <i class="fa-solid fa-plus text-xl text-white"></i>  
-    </div>
-    <div class="fixed left-12 bottom-8 z-[2]">
-      <FloorCounter v-if="buildingFloors"
-      :floors="buildingFloors"
-      :fromBuildingTable="false"
-      :key="buildingFloors"
-      @onFloorUpdated="updateFloor" />
+      </div>
+      <div v-if="currentBuilding"
+        class="fixed right-3 bottom-24 z-[3] rounded-full px-3 py-2 bg-slate-600 hover:bg-slate-700 cursor-pointer text-center"
+        @click="moveToBuilding(currentBuilding)">
+        <i class="fa-solid fa-location-crosshairs text-xl text-white"></i>  
+      </div>
     </div>
   </div>
 </template>
@@ -51,7 +65,7 @@ export default {
   setup() {
 
     const selectedFloor = ref(1);
-    const buildingFloors = ref(null);
+    const currentBuilding = ref(null);
   
     let map;
     let heatmapPoints;
@@ -117,8 +131,10 @@ export default {
 
     const moveToBuilding = (building) => {
       imageLayer.clearLayers();
-      map.setView([building.latitude, building.longitude], 20);
-      buildingFloors.value = building.floors;
+      map.setView([building.latitude, building.longitude], 19);
+      currentBuilding.value = building;
+      heatmapPoints = [];
+      heatmapLayer.clearLayers();
     }
 
     const loadHeatmapPoints = (points) => {
@@ -144,6 +160,7 @@ export default {
       const reader = new FileReader();
       reader.onload = function () {
         const dataURL = reader.result;
+        console.log(dataURL.substring(dataURL.lastIndexOf('.')+1));
         callback(dataURL);
       };
       reader.readAsDataURL(input.files[0]);
@@ -168,7 +185,7 @@ export default {
 
     return {
       selectedFloor,
-      buildingFloors,
+      currentBuilding,
       moveToBuilding,
       loadHeatmapPoints,
       updateHeatmap,

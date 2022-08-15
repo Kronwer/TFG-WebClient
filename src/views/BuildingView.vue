@@ -26,7 +26,6 @@
         <thead class="bg-gray-50">
           <!-- Header Titles -->
           <tr class="text-xs text-gray-500">
-            <th class="px-6 py-2">ID</th>
             <th class="px-6 py-2">Name</th>
             <th class="px-6 py-2">Floors</th>
             <th class="px-6 py-2">Latitude</th>
@@ -43,8 +42,6 @@
             v-bind:key="building.id"
             class="whitespace-nowrap text-sm text-gray-900 h-1 min-h-0"
           >
-            <!-- ID Field -->
-            <td class="px-6 py-4">{{ building.id }}</td>
             <!-- Name Field -->
             <td class="px-6 py-4">{{ building.name }}</td>
             <!-- Floors Fields -->
@@ -103,7 +100,7 @@ export default {
     // API Call to get all buildings
     const loadBuildings = () => {
       try {
-        axios.get("http://localhost:3000/buildings").then((response) => {
+        axios.get("http://192.168.18.118:3000/buildings").then((response) => {
           buildings.value = response.data;
         });
       } catch(err) {
@@ -143,7 +140,7 @@ export default {
     const onDeleteButton = (building) => {
       if (confirm(`Are you sure you want to delete ${building.name}?\nWARNING: This will remove all coordinates related to this building.`)) {
         try {
-          axios.delete(`http://localhost:3000/buildings/${building.id}`).then(() => {
+          axios.delete(`http://192.168.18.118:3000/buildings/${building.id}`).then(() => {
             buildings.value.splice(currentIndex.value, 1);
           });
         } catch(err) {

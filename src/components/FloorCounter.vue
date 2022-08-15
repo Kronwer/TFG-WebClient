@@ -25,7 +25,6 @@ export default {
         if (props.fromBuildingTable) {
             maxFloors = 163;
         } else {
-            console.log('Hello');
             maxFloors = floor.value;
             floor.value = 1;
         }

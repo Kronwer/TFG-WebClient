@@ -1,22 +1,17 @@
 <template>
-    <div class="w-full sm:flex-col lg:flex-row md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]
-    flex gap-4 px-6 py-8 md:px-0 md:py-0 bg-transparent">
+    <div class="flex flex-col sm:flex-row w-full gap-3 bg-transparent">
         <!-- Building Selector -->
-        <div class="relative flex-1 md:min-w-[350px]">
+        <div class="flex-auto">
             <!-- Selected Building -->
-            <select class="pl-9 pr-4 py-[7px] text-base focus:outline-none hover:outline outline-1 outline-slate-400 hover:cursor-pointer w-full shadow-md rounded-md" 
+            <select class="pl-4 pr-4 py-2 bg-white text-base focus:outline-none hover:cursor-pointer w-full shadow-md rounded-md" 
                     v-model="selectedBuilding" @change="onBuildingSelected()">
                 <option v-for="building in buildings" v-bind:key="building.name" :value="building">
                     {{ building.name }}
                 </option>
             </select>
-            <!-- Builiding Icon -->
-            <div class="absolute top-0 left-[14px] h-full flex items-center hover:cursor-pointer" @click="onBuildingSelected()">
-                <i v-if="selectedBuilding" class="fa-solid fa-location-crosshairs text-slate-600 text-xl"></i>
-            </div>
         </div>
         <!-- Date Picker -->
-        <div class="relative flex-1 shadow-md rounded-md md:min-w-[300px]">
+        <div class="flex-auto shadow-md rounded-md">
             <Datepicker
                 class="h-full"
                 ref="datepicker"
@@ -32,10 +27,10 @@
         </div>
         <!-- Search Button -->
         <button
-            class="px-4 shadow-md rounded-md bg-slate-600 hover:bg-slate-700 disabled:bg-slate-500 disabled:hover:bg-slate-500"
+            class="flex-1 py-1 shadow-md rounded-md bg-slate-500 hover:bg-slate-600 disabled:cursor-default disabled:bg-slate-500"
             @click="getHeatmap"
             :disabled="!selectedBuilding || !dates">
-            <i class="fa-solid fa-magnifying-glass text-[15px] text-white"></i></button>
+            <i class="fa-solid fa-magnifying-glass text-xl text-white"></i></button>
     </div>
 </template>
 
@@ -58,7 +53,7 @@ export default {
 
         // API Call to retrieve list of buildings
         const loadBuildings = () => {
-            axios.get("http://localhost:3000/buildings").then((response) => {
+            axios.get("http://192.168.18.118:3000/buildings").then((response) => {
                 buildings.value = response.data;
             })
         }
@@ -108,7 +103,7 @@ export default {
         // Search Button listener
         const getHeatmap = async () => {
             try {
-                const data = await axios.get(`http://localhost:3000/coordinates`, {
+                const data = await axios.get(`http://192.168.18.118:3000/coordinates`, {
                     params: {
                         building: selectedBuilding.value.id,
                         startDate: getStartDate(),
@@ -146,8 +141,8 @@ export default {
         return {
             selectedBuilding,
             buildings,
-            onBuildingSelected,
             loadBuildings,
+            onBuildingSelected,
             dates,
             presetRanges,
             dateFormat,
@@ -160,7 +155,8 @@ export default {
 <style lang="scss">
 $dp__border_radius: 5px !default; // Border radius everywhere
 $dp__menu_min_width: 290px !default; // Adjust the min width of the menu
-$dp__cell_size: 40px !default; // width and height of calendar cell
+$dp__cell_size: 25px !default; // width and height of calendar cell
+$dp__two_calendars_spacing: 10px !default; // Space between two calendars if using two calendars
 $dp__preview_font_size: 1rem !default; // font size of the date preview in the action row
 @import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';
 .dp__theme_light {
