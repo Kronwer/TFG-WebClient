@@ -26,10 +26,10 @@
         <thead class="bg-gray-50">
           <!-- Header Titles -->
           <tr class="text-gray-500">
-            <th class="text-center">Name</th>
+            <th class="text-center lg:w-1/2">Name</th>
             <th class="text-center">Floors</th>
-            <th class="text-center"></th>
-            <th class="text-center"></th>
+            <th class="text-center lg:w-1/12"></th>
+            <th class="text-center lg:w-1/12"></th>
           </tr>
         </thead>
         <!-- Table Rows -->
