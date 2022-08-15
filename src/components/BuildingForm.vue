@@ -1,40 +1,36 @@
 <template>
-    <div class="fixed overflow-x-hidden overflow-y-auto inset-0 flex justify-center items-center z-30">
-        <div class="relative mx-auto w-1/2 max-w-2xl">
-            <div class="bg-white rounded shadow-2xl flex flex-col px-10 py-10">
-                <!-- Name Field -->
-                    <div class="mb-6">
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Name: </label>
-                        <input type="email" id="email" v-model="currentBuilding.name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="UPV Test Building">
-                    </div>
-                    <!-- Floors Field -->
-                    <div class="mb-6">
-                        <label for="floors" class="block mb-2 text-sm font-medium text-gray-900">Floors</label>
-                        <FloorCounter
-                            :floors="building.floors"
-                            :fromBuildingTable="true"
-                            @onFloorUpdated="updateFloor" />
-                    </div> 
-                    <!-- Latitude Field -->
-                    <div class="mb-6">
-                        <label for="latitude" class="block mb-2 text-sm font-medium text-gray-900">Latitude</label>
-                        <input id="latitude" v-model="currentBuilding.latitude" class="bg-gray-50 border border-gray-300 text-gray-400 text-sm rounded-lg block w-full p-2.5" :disabled="true">
-                    </div>
-                    <!-- Longitude Field -->
-                    <div class="mb-6">
-                        <label for="longitude" class="block mb-2 text-sm font-medium text-gray-900">Longitude</label>
-                        <input id="longitude" v-model="currentBuilding.longitude" class="bg-gray-50 border border-gray-300 text-gray-400 text-sm rounded-lg block w-full p-2.5" :disabled="true">
-                    </div>
-                    <!-- Map -->
-                    <div id="map" class="h-64 "></div>
-                    <!-- Buttons -->
-                    <div class="flex space-x-5 mt-6 mb-6">
-                        <!-- Save Button -->
-                        <button @click="onSaveButton" :disabled="!currentBuilding.name" class="basis-1/2 text-white bg-green-500 hover:bg-green-600 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-50 disabled:hover:bg-green-500">Save</button>
-                        <!-- Cancel Button -->
-                        <button @click="onCancelButton" class="basis-1/2 text-black bg-slate-200 hover:bg-slate-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Cancel</button>
-                    </div>
-            </div>
+    <div class="flex flex-col gap-y-4 bg-white px-10 py-10">
+        <!-- Name Field -->
+        <div>
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Name</label>
+            <input type="email" id="email" v-model="currentBuilding.name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" placeholder="UPV Test Building">
+        </div>
+        <!-- Floors Field -->
+        <div>
+            <label for="floors" class="block mb-2 text-sm font-medium text-gray-900">Floors</label>
+            <FloorCounter
+                :floors="building.floors"
+                :fromBuildingTable="true"
+                @onFloorUpdated="updateFloor" />
+        </div> 
+        <!-- Latitude Field -->
+        <div>
+            <label for="latitude" class="block mb-2 text-sm font-medium text-gray-900">Latitude</label>
+            <input id="latitude" v-model="currentBuilding.latitude" class="bg-gray-50 border border-gray-300 text-gray-400 text-sm rounded-lg block w-full p-2.5" :disabled="true">
+        </div>
+        <!-- Longitude Field -->
+        <div>
+            <label for="longitude" class="block mb-2 text-sm font-medium text-gray-900">Longitude</label>
+            <input id="longitude" v-model="currentBuilding.longitude" class="bg-gray-50 border border-gray-300 text-gray-400 text-sm rounded-lg block w-full p-2.5" :disabled="true">
+        </div>
+        <!-- Map -->
+        <div id="map" class="h-64"></div>
+        <!-- Buttons -->
+        <div class="flex space-x-5 mt-6 mb-6">
+            <!-- Save Button -->
+            <button @click="onSaveButton" :disabled="!currentBuilding.name" class="basis-1/2 text-white bg-green-500 hover:bg-green-600 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-50 disabled:hover:bg-green-500">Save</button>
+            <!-- Cancel Button -->
+            <button @click="onCancelButton" class="basis-1/2 text-black bg-slate-200 hover:bg-slate-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Cancel</button>
         </div>
     </div>
 </template>

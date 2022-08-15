@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col gap-8 pt-8 bg-gray-100">
-    <!-- Add Building Button -->
-    <div class="h-12 flex justify-center">
+  <div class="flex flex-col relative">
+    <!-- Top Section -->
+    <div class="flex justify-center px-5 py-6 bg-transparent">
       <button
         class="
-          w-2/5
+          w-full max-w-sm
           px-4
           py-2
-          font-semibold
-          text-xl
+          font-bold
+          text-3xl
           bg-green-500
           text-white
           rounded-full
@@ -17,21 +17,19 @@
         "
         @click="onAddButton"
       >
-        Add Building
+        +
       </button>
     </div>
-    <!-- Table -->
-    <div class="px-10">
-      <table class="divide-y divide-gray-300 w-full text-center table-auto border-b border-gray-200 shadow">
+    <!-- Bottom Section -->
+    <div class="flex justify-center px-5 bg-transparent rounded-lg">
+      <table class="table-fixed w-full border-b border-gray-200 shadow">
         <thead class="bg-gray-50">
           <!-- Header Titles -->
-          <tr class="text-xs text-gray-500">
-            <th class="px-6 py-2">Name</th>
-            <th class="px-6 py-2">Floors</th>
-            <th class="px-6 py-2">Latitude</th>
-            <th class="px-6 py-2">Longitude</th>
-            <th class="px-6 py-2 w-32"></th>
-            <th class="px-6 py-2 w-32"></th>
+          <tr class="text-gray-500">
+            <th class="text-center">Name</th>
+            <th class="text-center">Floors</th>
+            <th class="text-center"></th>
+            <th class="text-center"></th>
           </tr>
         </thead>
         <!-- Table Rows -->
@@ -40,44 +38,40 @@
           <tr
             v-for="(building, index) in buildings"
             v-bind:key="building.id"
-            class="whitespace-nowrap text-sm text-gray-900 h-1 min-h-0"
           >
             <!-- Name Field -->
-            <td class="px-6 py-4">{{ building.name }}</td>
+            <td class="text-center">{{ building.name }}</td>
             <!-- Floors Fields -->
-            <td class="px-6 py-4">{{ building.floors }}</td>
-            <!-- Latitude Field -->
-            <td class="px-6 py-4">{{ building.latitude }}</td>
-            <!-- Longitude Field -->
-            <td class="px-6 py-4">{{ building.longitude }}</td>
+            <td class="text-center">{{ building.floors }}</td>
             <!-- Edit Button -->
-            <td class="px-6 py-4">
-              <button 
-                class="bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded w-20"
-                @click="currentIndex = index; onEditButton(building)" >
-                Edit
-              </button>
+            <td class="text-center">
+              <div 
+                class="bg-blue-400 hover:bg-blue-500 text-white p-2 rounded-md"
+                @click="currentIndex = index; onEditButton(building)">
+                <i class="fa-solid fa-pen"></i>
+              </div>
             </td>
           <!-- Delete Button -->
-            <td class="px-6 py-4">
-              <button 
-                class="bg-red-400 hover:bg-red-500 text-white py-2 px-4 rounded w-20"
+            <td class="text-center">
+              <div 
+                class="bg-red-400 hover:bg-red-500 text-white p-2 rounded-md"
                 @click="currentIndex = index; onDeleteButton(building)">
-                Delete
-              </button>
+                <i class="fa-solid fa-trash-can"></i>
+              </div>
             </td>    
           </tr>
         </tbody>
       </table>
     </div>
     <!-- Building Editing Modal Window -->
-    <BuildingForm
-      v-if="showBuildingForm"
-      :editMode="editMode"
-      :building="currentBuilding"
-      @onSaveButton="updateBuildings"
-      @onCloseButton="hideBuildingForm"/>
-    <div v-if="showBuildingForm" class="absolute inset-0 z-20 opacity-25 bg-black"></div>
+    <div v-if="showBuildingForm"
+    class="absolute w-full h-full md:px-5 md:py-5 z-20">
+      <BuildingForm
+        :editMode="editMode"
+        :building="currentBuilding"
+        @onSaveButton="updateBuildings"
+        @onCloseButton="hideBuildingForm"/>
+    </div>
   </div>
 </template>
 

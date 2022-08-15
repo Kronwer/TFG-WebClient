@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen relative">
+  <div class="flex flex-col h-full relative">
     <!-- Top Section -->
     <div class="flex justify-center px-8 py-6 sm:py-4 bg-slate-700">
       <SearchBar
