@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col h-full relative">
     <!-- Top Section -->
-    <div class="flex justify-center px-8 py-6 sm:py-4 bg-slate-700">
+    <div class="flex justify-center px-6 py-6 sm:py-4 bg-slate-700">
       <SearchBar
       @moveToBuilding="moveToBuilding"
       @loadHeatmap="loadHeatmapPoints"

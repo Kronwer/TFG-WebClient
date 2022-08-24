@@ -72,6 +72,7 @@
         @onSaveButton="updateBuildings"
         @onCloseButton="hideBuildingForm"/>
     </div>
+    <div v-if="showBuildingForm" class="absolute inset-0 z-10 opacity-25 bg-black"></div>
   </div>
 </template>
 
