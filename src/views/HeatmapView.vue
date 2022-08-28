@@ -80,7 +80,7 @@ export default {
 
     onMounted(() => {
       // init map
-      map = L.map('map', {minZoom: 18, maxZoom: 20}).setView([39.480878365981056, -0.3409574554237043], 18);
+      map = L.map('map', {minZoom: 19, maxZoom: 20}).setView([39.480878365981056, -0.3409574554237043], 19);
 
       // add tile layer
       streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hnYXJjaWE5OCIsImEiOiJjbDJyd3p0anowMHhoM2NsbXVkdTZlYXNrIn0.esKnkHNbl1d0-hNxQxv34A', 
@@ -147,10 +147,11 @@ export default {
       heatmapLayer.addLayer(
         L.heatLayer(
           heatmapPoints.filter(
-            point => point.floorNumber === selectedFloor.value
+            point => point.floornumber === selectedFloor.value
             ).map(({latitude, longitude}) => [latitude, longitude]), { 
-              maxZoom: 22,
-
+              maxZoom: 22, // default 20
+              radius: 15, // default 25
+              blur: 20 // default 15
         }));
     }
 
