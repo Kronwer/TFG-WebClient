@@ -41,7 +41,15 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import moment from 'moment';
-import {startOfMonth, subMonths, subYears } from 'date-fns';
+import {startOfMonth,
+    startOfWeek,
+    startOfYear,
+    subMonths,
+    subYears,
+    subHours,
+    subDays,
+    subWeeks,
+    addDays } from 'date-fns';
 
 export default {
     components: { Datepicker },
@@ -61,13 +69,18 @@ export default {
         // Start/End Date variables
         const dates = ref();
         const presetRanges = ref([
-          { label: 'Today', range: [new Date().setHours(0,0,0,0), new Date().setHours(23,59,0,0)] },
-          { label: 'This month', range: [startOfMonth(new Date().setHours(0,0,0,0)), new Date().setHours(23,59,0,0)] },
-          {
-            label: 'Last month',
-            range: [subMonths(new Date().setHours(0,0,0,0), 1), new Date().setHours(23,59,0,0)],
-          },
-          { label: 'This year', range: [subYears(new Date().setHours(0,0,0,0), 1), new Date().setHours(23,59,0,0)] },
+            { label: 'Last Hour', range: [subHours(new Date(), 1), new Date()] },
+            { label: 'Today', range: [new Date().setHours(0,0,0,0), new Date().setHours(23,59,0,0)] },
+            { label: 'Yesterday', range: [subDays(new Date().setHours(0,0,0,0), 1),subDays(new Date().setHours(23,59,0,0), 1)] },
+            { label: 'This Week', range: [addDays(startOfWeek(new Date().setHours(0,0,0,0)), 1), new Date().setHours(23,59,0,0)] },
+            { label: 'Last Week', range: [addDays(subWeeks(new Date().setHours(0,0,0,0), 1), 1), new Date().setHours(23,59,0,0)] },
+            { label: 'This month', range: [startOfMonth(new Date().setHours(0,0,0,0)), new Date().setHours(23,59,0,0)] },
+            {
+                label: 'Last month',
+                range: [addDays(subMonths(new Date().setHours(0,0,0,0), 1), 1), new Date().setHours(23,59,0,0)],
+            },
+            { label: 'This year', range: [startOfYear(new Date().setHours(0,0,0,0)), new Date().setHours(23,59,0,0)] },
+            { label: 'Last year', range: [addDays(subYears(new Date().setHours(0,0,0,0), 1), 1), new Date().setHours(23,59,0,0)] },
         ]);
 
         onMounted(() => {
