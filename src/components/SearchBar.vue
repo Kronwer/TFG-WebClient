@@ -144,7 +144,7 @@ export default {
 
         const onBuildingSelected = () => {
             if (selectedBuilding.value) {
-                emit("moveToBuilding", selectedBuilding.value);
+                emit("moveToBuilding", selectedBuilding.value, true);
             }
         }
 

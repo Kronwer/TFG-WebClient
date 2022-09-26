@@ -37,7 +37,7 @@
       </div>
       <div v-if="currentBuilding"
         class="fixed right-3 bottom-24 z-[3] rounded-full px-3 py-2 bg-slate-600 hover:bg-slate-700 cursor-pointer text-center"
-        @click="moveToBuilding(currentBuilding)">
+        @click="moveToBuilding(currentBuilding, false)">
         <i class="fa-solid fa-location-crosshairs text-xl text-white"></i>  
       </div>
     </div>
@@ -80,13 +80,13 @@ export default {
 
     onMounted(() => {
       // init map
-      map = L.map('map', {minZoom: 19, maxZoom: 20}).setView([39.480878365981056, -0.3409574554237043], 19);
+      map = L.map('map', {minZoom: 19, maxZoom: 22}).setView([39.480878365981056, -0.3409574554237043], 19);
 
       // add tile layer
       streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hnYXJjaWE5OCIsImEiOiJjbDJyd3p0anowMHhoM2NsbXVkdTZlYXNrIn0.esKnkHNbl1d0-hNxQxv34A', 
       {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 20,
+        maxZoom: 22,
         id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
@@ -94,22 +94,22 @@ export default {
       }).addTo(map);
 
       osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+        maxZoom: 20,
         attribution: '© OpenStreetMap'
       }).addTo(map);
 
       googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
-        maxZoom: 20,
+        maxZoom: 22,
         subdomains:['mt0','mt1','mt2','mt3']
       }).addTo(map);
 
       googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-        maxZoom: 20,
+        maxZoom: 22,
         subdomains:['mt0','mt1','mt2','mt3']
       }).addTo(map);
 
       googleSatellite = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-        maxZoom: 20,
+        maxZoom: 22,
         subdomains:['mt0','mt1','mt2','mt3']
       }).addTo(map);
 
@@ -129,12 +129,14 @@ export default {
       layerControl.addOverlay(heatmapLayer, "Heatmap");
     });
 
-    const moveToBuilding = (building) => {
-      imageLayer.clearLayers();
+    const moveToBuilding = (building, deletePoints) => {
+      if (deletePoints) {
+        imageLayer.clearLayers();
+        currentBuilding.value = building;
+        heatmapPoints = [];
+        heatmapLayer.clearLayers();
+      }
       map.setView([building.latitude, building.longitude], 19);
-      currentBuilding.value = building;
-      heatmapPoints = [];
-      heatmapLayer.clearLayers();
     }
 
     const loadHeatmapPoints = (points) => {
@@ -149,9 +151,9 @@ export default {
           heatmapPoints.filter(
             point => point.floornumber === selectedFloor.value
             ).map(({latitude, longitude}) => [latitude, longitude]), { 
-              maxZoom: 22, // default 20
-              radius: 15, // default 25
-              blur: 20 // default 15
+              maxZoom: 23, // default 20
+              radius: 12, // default 25
+              blur: 15 // default 15
         }));
     }
 

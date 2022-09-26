@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "vitest --dom"
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^3.2.2",
@@ -23,16 +24,20 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@vitejs/plugin-vue": "^3.0.3",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "@vue/test-utils": "^2.0.2",
     "autoprefixer": "^10.4.7",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "happy-dom": "^6.0.4",
     "postcss": "^8.4.14",
     "sass": "^1.52.2",
     "sass-loader": "^13.0.0",
-    "tailwindcss": "^3.0.24"
+    "tailwindcss": "^3.0.24",
+    "vitest": "^0.22.1"
   }
 }
